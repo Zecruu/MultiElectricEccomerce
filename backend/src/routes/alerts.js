@@ -10,11 +10,12 @@ router.get('/recent', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('employ
 });
 // SSE stream
 router.get('/stream', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('employee'), async (req, res) => {
+    var _a;
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
     // Allow CORS preconfigured globally; include credentials.
-    res.flushHeaders?.();
+    (_a = res.flushHeaders) === null || _a === void 0 ? void 0 : _a.call(res);
     (0, alerts_1.subscribe)(res);
     const hb = setInterval(() => {
         try {

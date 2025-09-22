@@ -1,15 +1,4 @@
-function isLocalHost(hostname: string){
-  return (
-    hostname === 'localhost' || hostname === '127.0.0.1' ||
-    /^10\./.test(hostname) || /^192\.168\./.test(hostname) || /^172\.(1[6-9]|2\d|3[0-1])\./.test(hostname)
-  );
-}
-const inferredBase = typeof window !== 'undefined'
-  ? (isLocalHost(window.location.hostname)
-      ? `${window.location.protocol}//${window.location.hostname}:5000`
-      : undefined)
-  : undefined;
-const BASE = process.env.NEXT_PUBLIC_BACKEND_URL || inferredBase || "http://localhost:5000";
+const BASE = process.env.NEXT_PUBLIC_BACKEND_URL ?? '';
 export const API_BASE = BASE;
 
 async function getCsrf() {

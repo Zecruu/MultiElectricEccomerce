@@ -4,7 +4,6 @@ exports.subscribe = subscribe;
 exports.unsubscribe = unsubscribe;
 exports.push = push;
 exports.getRecent = getRecent;
-const express_1 = require("express");
 const recent = [];
 const clients = new Set();
 function send(res, event, data) {

@@ -1,11 +1,8 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTransporter = getTransporter;
 exports.sendEmail = sendEmail;
-const nodemailer_1 = __importDefault(require("nodemailer"));
+const nodemailer_1 = require("nodemailer");
 const env_1 = require("../config/env");
 let transporter = null;
 function getTransporter() {

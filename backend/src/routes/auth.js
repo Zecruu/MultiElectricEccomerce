@@ -1,10 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcrypt_1 = require("bcrypt");
 const zod_1 = require("zod");
 const User_1 = require("../models/User");
 const AuditLog_1 = require("../models/AuditLog");
@@ -96,7 +93,8 @@ router.post('/login-employee', async (req, res) => {
     res.json({ message: 'Logged in' });
 });
 router.post('/refresh', async (req, res) => {
-    const token = req.cookies?.refreshToken;
+    var _a;
+    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken;
     if (!token)
         return res.status(401).json({ error: 'Unauthorized' });
     try {
@@ -247,7 +245,7 @@ router.get('/google/callback', async (req, res) => {
         const sub = info.sub;
         let user = await User_1.User.findOne({ email, deletedAt: null });
         if (!user) {
-            const randomPassword = (await import('crypto')).randomUUID();
+            const randomPassword = (await Promise.resolve().then(() => require('crypto'))).randomUUID();
             const passwordHash = await bcrypt_1.default.hash(randomPassword, 12);
             user = await User_1.User.create({ name, email, passwordHash, role: 'customer', emailVerified: true, oauthProvider: 'google', oauthSub: sub });
             await AuditLog_1.AuditLog.create({ actorId: user._id, action: 'auth.google.create', targetType: 'User', targetId: String(user._id) });

@@ -21,7 +21,7 @@ router.post('/sign', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('employe
             Expires: 300,
             Fields: { acl: 'public-read' },
             Conditions: [
-                ["content-length-range", 0, 10_000_000],
+                ["content-length-range", 0, 10000000],
                 ["starts-with", "$Content-Type", "image/"],
                 { acl: 'public-read' }
             ],

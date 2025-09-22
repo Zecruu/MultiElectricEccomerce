@@ -34,7 +34,7 @@ router.post('/', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin'), as
         res.status(201).json(doc);
     }
     catch (e) {
-        if (e?.code === 11000)
+        if ((e === null || e === void 0 ? void 0 : e.code) === 11000)
             return res.status(409).json({ error: 'duplicate' });
         res.status(400).json({ error: 'bad_request' });
     }
@@ -54,19 +54,20 @@ router.patch('/:id', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin')
         res.json(doc);
     }
     catch (e) {
-        if (e?.code === 11000)
+        if ((e === null || e === void 0 ? void 0 : e.code) === 11000)
             return res.status(409).json({ error: 'duplicate' });
         res.status(400).json({ error: 'bad_request' });
     }
 });
 // Delete (admin) with product handling
 router.delete('/:id', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin'), async (req, res) => {
+    var _a, _b, _c, _d;
     const cat = await Category_1.Category.findById(req.params.id).lean();
     if (!cat)
         return res.status(404).json({ error: 'not_found' });
     const count = await productCountForCategory(cat);
-    const action = (req.body?.action || req.query?.action || '').toString();
-    const toId = (req.body?.to || req.query?.to || '').toString();
+    const action = (((_a = req.body) === null || _a === void 0 ? void 0 : _a.action) || ((_b = req.query) === null || _b === void 0 ? void 0 : _b.action) || '').toString();
+    const toId = (((_c = req.body) === null || _c === void 0 ? void 0 : _c.to) || ((_d = req.query) === null || _d === void 0 ? void 0 : _d.to) || '').toString();
     if (count > 0 && !action) {
         return res.status(409).json({ error: 'has_products', products: count, requireAction: true });
     }

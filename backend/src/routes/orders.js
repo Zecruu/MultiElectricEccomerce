@@ -1,41 +1,8 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const zod_1 = require("zod");
-const auth = __importStar(require("../middleware/auth"));
+const auth = require("../middleware/auth");
 const Order_1 = require("../models/Order");
 const Product_1 = require("../models/Product");
 const crypto_1 = require("crypto");
@@ -139,6 +106,7 @@ const CreateOrderInput = zod_1.z.object({
 });
 // Create order (guest or logged-in). CSRF protected globally.
 router.post('/', SAFE_OPTIONAL, async (req, res) => {
+    var _a, _b;
     try {
         const parse = CreateOrderInput.safeParse(req.body);
         if (!parse.success)
@@ -148,7 +116,7 @@ router.post('/', SAFE_OPTIONAL, async (req, res) => {
             itemsCount: items.length,
             itemIdsSample: items.slice(0, 3).map(i => i.productId),
             hasEmail: !!email,
-            hasAddress: !!shippingAddress?.name && !!shippingAddress?.street && !!shippingAddress?.city,
+            hasAddress: !!(shippingAddress === null || shippingAddress === void 0 ? void 0 : shippingAddress.name) && !!(shippingAddress === null || shippingAddress === void 0 ? void 0 : shippingAddress.street) && !!(shippingAddress === null || shippingAddress === void 0 ? void 0 : shippingAddress.city),
             method: paymentMethod,
         });
         console.log('Checkout validation: validating product IDs');
@@ -165,16 +133,17 @@ router.post('/', SAFE_OPTIONAL, async (req, res) => {
         }
         const productMap = new Map(products.map(p => [String(p._id), p]));
         const orderItems = items.map(i => {
+            var _a, _b, _c, _d, _e, _f;
             const p = productMap.get(i.productId);
             if (!p)
                 throw new Error('Product not found');
             return {
                 productId: p._id,
                 sku: p.sku,
-                name: (p.translations?.es?.name || p.translations?.en?.name || p.sku),
+                name: (((_b = (_a = p.translations) === null || _a === void 0 ? void 0 : _a.es) === null || _b === void 0 ? void 0 : _b.name) || ((_d = (_c = p.translations) === null || _c === void 0 ? void 0 : _c.en) === null || _d === void 0 ? void 0 : _d.name) || p.sku),
                 price: p.price,
                 qty: i.qty,
-                imageUrl: p.images?.[0]?.url,
+                imageUrl: (_f = (_e = p.images) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.url,
             };
         });
         const subtotal = orderItems.reduce((s, it) => s + it.price * it.qty, 0);
@@ -192,7 +161,7 @@ router.post('/', SAFE_OPTIONAL, async (req, res) => {
         }
         const toCreate = {
             _id,
-            userId: req.user?.id || null,
+            userId: ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) || null,
             email,
             items: orderItems,
             subtotal, tax, shipping, total,
@@ -232,14 +201,14 @@ router.post('/', SAFE_OPTIONAL, async (req, res) => {
                 orderId: String(order._id),
                 orderNumber: order.orderNumber,
                 amount: order.total,
-                customerName: order.shippingAddress?.name,
+                customerName: (_b = order.shippingAddress) === null || _b === void 0 ? void 0 : _b.name,
             });
         }
         catch (e) { /* noop */ }
         res.status(201).json({ id: order._id, orderNumber: order.orderNumber, publicToken, total, clientSecret });
     }
     catch (err) {
-        console.error('Checkout error:', err?.stack || err);
+        console.error('Checkout error:', (err === null || err === void 0 ? void 0 : err.stack) || err);
         return res.status(500).json({ error: 'Internal error during checkout' });
     }
 });

@@ -71,7 +71,8 @@ let integrations = {
 };
 // Helpers
 function ensureAdmin(req) {
-    if (req.user?.role !== 'admin') {
+    var _a;
+    if (((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) !== 'admin') {
         const err = new Error('Forbidden');
         err.status = 403;
         throw err;
@@ -92,14 +93,15 @@ router.get('/templates', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('adm
     res.json(Object.values(templates));
 });
 router.patch('/templates/:key', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin'), async (req, res) => {
+    var _a, _b;
     const key = req.params.key;
     const t = templates[key];
     if (!t)
         return res.status(404).json({ error: 'Not found' });
     const before = { ...t };
-    if (req.body?.subject)
+    if ((_a = req.body) === null || _a === void 0 ? void 0 : _a.subject)
         t.subject = req.body.subject;
-    if (req.body?.body)
+    if ((_b = req.body) === null || _b === void 0 ? void 0 : _b.body)
         t.body = req.body.body;
     // Versioning (keep last 5)
     t.versions = [{ subject: before.subject, body: before.body, at: new Date().toISOString() }, ...t.versions].slice(0, 5);
@@ -118,8 +120,9 @@ router.get('/webhooks', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admi
     res.json({ endpoints: webhooks, deliveries: webhookDeliveries.slice(-50) });
 });
 router.post('/webhooks', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin'), async (req, res) => {
+    var _a, _b, _c;
     const id = String(Date.now());
-    const item = { id, name: req.body?.name || 'New endpoint', url: req.body?.url, secret: '••••••', events: req.body?.events || [], status: 'unknown', lastDelivery: null };
+    const item = { id, name: ((_a = req.body) === null || _a === void 0 ? void 0 : _a.name) || 'New endpoint', url: (_b = req.body) === null || _b === void 0 ? void 0 : _b.url, secret: '••••••', events: ((_c = req.body) === null || _c === void 0 ? void 0 : _c.events) || [], status: 'unknown', lastDelivery: null };
     webhooks = [...webhooks, item];
     await AuditLog_1.AuditLog.create({ actorId: req.user.id, action: 'settings.webhooks.create', targetId: id, after: item });
     res.status(201).json(item);

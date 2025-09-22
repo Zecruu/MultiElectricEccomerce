@@ -36,10 +36,10 @@ router.post('/:id/send-reset', (0, auth_1.requireAuth)(), (0, auth_1.requireRole
     if (!client || client.role !== 'customer')
         return res.status(404).json({ error: 'Not found' });
     // Issue reset token and email
-    const { PasswordResetToken } = await import('../models/PasswordResetToken');
-    const { sendEmail } = await import('../utils/email');
-    const { env } = await import('../config/env');
-    const { randomUUID } = await import('crypto');
+    const { PasswordResetToken } = await Promise.resolve().then(() => require('../models/PasswordResetToken'));
+    const { sendEmail } = await Promise.resolve().then(() => require('../utils/email'));
+    const { env } = await Promise.resolve().then(() => require('../config/env'));
+    const { randomUUID } = await Promise.resolve().then(() => require('crypto'));
     const token = randomUUID();
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
     await PasswordResetToken.create({ userId: client._id, token, expiresAt });

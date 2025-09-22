@@ -54,6 +54,7 @@ router.get('/:id', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('employee'
 });
 // Create (admin only)
 router.post('/', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin'), async (req, res) => {
+    var _a, _b;
     try {
         const body = req.body || {};
         if (typeof body.price !== 'number' || body.price < 0)
@@ -72,7 +73,7 @@ router.post('/', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin'), as
         if (stripe) {
             try {
                 const sp = await stripe.products.create({
-                    name: body.translations?.en?.name || body.sku,
+                    name: ((_b = (_a = body.translations) === null || _a === void 0 ? void 0 : _a.en) === null || _b === void 0 ? void 0 : _b.name) || body.sku,
                     active: true,
                     metadata: { sku: body.sku, productId: String(doc._id) },
                 });
@@ -90,13 +91,14 @@ router.post('/', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin'), as
         return res.status(201).json(doc);
     }
     catch (e) {
-        if (e?.code === 11000)
+        if ((e === null || e === void 0 ? void 0 : e.code) === 11000)
             return res.status(409).json({ error: 'Duplicate SKU' });
         return res.status(400).json({ error: 'Bad request' });
     }
 });
 // Full update (admin only)
 router.put('/:id', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin'), async (req, res) => {
+    var _a, _b;
     try {
         const body = req.body || {};
         if (typeof body.price !== 'number' || body.price < 0)
@@ -118,7 +120,7 @@ router.put('/:id', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin'), 
                 // Ensure product exists
                 let spId = doc.stripeProductId;
                 if (!spId) {
-                    const sp = await stripe.products.create({ name: doc.translations?.en?.name || doc.sku, active: true, metadata: { sku: doc.sku, productId: String(doc._id) } });
+                    const sp = await stripe.products.create({ name: ((_b = (_a = doc.translations) === null || _a === void 0 ? void 0 : _a.en) === null || _b === void 0 ? void 0 : _b.name) || doc.sku, active: true, metadata: { sku: doc.sku, productId: String(doc._id) } });
                     spId = sp.id;
                 }
                 // Ensure product is active in Stripe
@@ -139,13 +141,14 @@ router.put('/:id', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('admin'), 
         res.json(doc);
     }
     catch (e) {
-        if (e?.code === 11000)
+        if ((e === null || e === void 0 ? void 0 : e.code) === 11000)
             return res.status(409).json({ error: 'Duplicate SKU' });
         return res.status(400).json({ error: 'Bad request' });
     }
 });
 // Partial update (admin; allow employee to patch stock only)
 router.patch('/:id', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('employee'), async (req, res) => {
+    var _a, _b;
     const isAdmin = req.user.role === 'admin';
     const body = req.body || {};
     // If not admin, only allow { stock }
@@ -172,7 +175,7 @@ router.patch('/:id', (0, auth_1.requireAuth)(), (0, auth_1.requireRole)('employe
         try {
             let spId = updated.stripeProductId;
             if (!spId) {
-                const sp = await stripe.products.create({ name: updated.translations?.en?.name || updated.sku, active: true, metadata: { sku: updated.sku, productId: String(updated._id) } });
+                const sp = await stripe.products.create({ name: ((_b = (_a = updated.translations) === null || _a === void 0 ? void 0 : _a.en) === null || _b === void 0 ? void 0 : _b.name) || updated.sku, active: true, metadata: { sku: updated.sku, productId: String(updated._id) } });
                 spId = sp.id;
             }
             await stripe.products.update(spId, { active: true });

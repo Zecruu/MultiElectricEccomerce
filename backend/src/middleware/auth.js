@@ -1,18 +1,15 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requireAuth = requireAuth;
 exports.optionalAuth = optionalAuth;
 exports.requireRole = requireRole;
-const express_1 = require("express");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const jsonwebtoken_1 = require("jsonwebtoken");
 const env_1 = require("../config/env");
 const User_1 = require("../models/User");
 function requireAuth() {
     return async (req, res, next) => {
-        const token = req.cookies?.accessToken;
+        var _a;
+        const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.accessToken;
         if (!token)
             return res.status(401).json({ error: 'Unauthorized' });
         try {
@@ -33,7 +30,8 @@ function requireAuth() {
 }
 function optionalAuth() {
     return async (req, _res, next) => {
-        const token = req.cookies?.accessToken;
+        var _a;
+        const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.accessToken;
         if (!token)
             return next();
         try {

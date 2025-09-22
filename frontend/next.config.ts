@@ -9,9 +9,10 @@ const allowedFromEnv = (process.env.ALLOWED_DEV_ORIGINS || "")
   .filter(Boolean);
 
 const nextConfig: NextConfig = {
+  experimental: { externalDir: true },
   // See https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
   // Note: This only has effect in development.
-  ...(allowedFromEnv.length ? { allowedDevOrigins: allowedFromEnv as any } : {}),
+  ...(allowedFromEnv.length ? { allowedDevOrigins: allowedFromEnv as string[] } : {}),
 };
 
 export default nextConfig;

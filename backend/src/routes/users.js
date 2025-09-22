@@ -1,11 +1,8 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const zod_1 = require("zod");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcrypt_1 = require("bcrypt");
 const auth_1 = require("../middleware/auth");
 const User_1 = require("../models/User");
 const AuditLog_1 = require("../models/AuditLog");

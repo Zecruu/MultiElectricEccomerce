@@ -1,12 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
 const mongoose_1 = require("../src/db/mongoose");
 const User_1 = require("../src/models/User");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcrypt_1 = require("bcrypt");
 async function main() {
     const email = (process.argv[2] || '').toLowerCase();
     const passwordArg = (process.argv[3] || '');

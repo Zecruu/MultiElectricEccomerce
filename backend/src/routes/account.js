@@ -1,22 +1,20 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const zod_1 = require("zod");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcrypt_1 = require("bcrypt");
 const auth_1 = require("../middleware/auth");
 const User_1 = require("../models/User");
 const router = (0, express_1.Router)();
 // Fetch current settings
 router.get('/settings', (0, auth_1.requireAuth)(), async (req, res) => {
+    var _a, _b, _c;
     const user = await User_1.User.findById(req.user.id).lean();
     if (!user)
         return res.status(404).json({ error: 'Not found' });
     return res.json({
         profile: { name: user.name, email: user.email },
-        preferences: { language: user.preferences?.language || 'es', emailNotifications: user.preferences?.emailNotifications ?? true },
+        preferences: { language: ((_a = user.preferences) === null || _a === void 0 ? void 0 : _a.language) || 'es', emailNotifications: (_c = (_b = user.preferences) === null || _b === void 0 ? void 0 : _b.emailNotifications) !== null && _c !== void 0 ? _c : true },
         sessions: [{ id: 'current', device: req.headers['user-agent'] || 'Unknown', current: true, lastActiveAt: new Date() }],
         addresses: [], // stub for now
         paymentMethods: [], // stub for now
