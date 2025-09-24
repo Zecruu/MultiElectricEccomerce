@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { apiGet } from "@/lib/api";
 
@@ -12,7 +12,7 @@ type CatalogProduct = {
   images?: { url: string; alt?: string; primary?: boolean }[];
 };
 
-export default function ProductsPage(){
+function ProductsPageInner(){
   const [items, setItems] = useState<CatalogProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<{ _id:string; name:string; slug:string; productCount:number }[]>([]);
@@ -160,7 +160,6 @@ export default function ProductsPage(){
               <div key={p._id} className="bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden">
                 <div className="aspect-square bg-neutral-800 border-b border-neutral-800 flex items-center justify-center">
                   {primary ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img src={primary.url} alt={primary.alt||name} className="w-full h-full object-cover"/>
                   ) : (
                     <div className="text-white/40 text-sm">No image</div>
@@ -177,6 +176,14 @@ export default function ProductsPage(){
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProductsPage(){
+  return (
+    <Suspense fallback={<div className="max-w-6xl mx-auto px-4 py-8 text-white/60">Loading...</div>}>
+      <ProductsPageInner />
+    </Suspense>
   );
 }
 

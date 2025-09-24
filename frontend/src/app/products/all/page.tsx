@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { apiGet } from "@/lib/api";
 
@@ -9,7 +9,7 @@ type CatalogProduct = {
   images?: { url: string; alt?: string; primary?: boolean }[];
 };
 
-export default function AllProductsPage(){
+function AllProductsInner(){
   const [items, setItems] = useState<CatalogProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
@@ -88,7 +88,6 @@ export default function AllProductsPage(){
               <div key={p._id} className="bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden">
                 <div className="aspect-square bg-neutral-800 border-b border-neutral-800 flex items-center justify-center">
                   {primary ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img src={primary.url} alt={primary.alt||name} className="w-full h-full object-contain"/>
                   ) : (
                     <div className="text-white/40 text-sm">No image</div>
@@ -114,5 +113,13 @@ export default function AllProductsPage(){
         <button disabled={page>=totalPages} onClick={()=> go(page+1)} className="px-3 py-1.5 rounded border border-neutral-800 text-white/70 disabled:opacity-50 hover:text-white hover:bg-neutral-900">Next</button>
       </div>
     </div>
+  );
+}
+
+export default function AllProductsPage(){
+  return (
+    <Suspense fallback={<div className="max-w-6xl mx-auto px-4 py-8 text-white/60">Loading...</div>}>
+      <AllProductsInner />
+    </Suspense>
   );
 }

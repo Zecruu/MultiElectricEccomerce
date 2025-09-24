@@ -12,7 +12,7 @@ let cachedApp: unknown;
 async function getExpressApp(): Promise<unknown> {
   if (!cachedApp) {
     // Import the backend Express app builder (outside Next app directory)
-    const mod = await import('../../../../backend/src/app');
+    const mod = await import('@backend/src/app');
     cachedApp = await mod.getApp();
   }
   return cachedApp;

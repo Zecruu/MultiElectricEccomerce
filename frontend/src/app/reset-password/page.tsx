@@ -1,9 +1,9 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { apiPost } from "@/lib/api";
 
-export default function ResetPasswordPage(){
+function ResetPasswordInner(){
   const sp = useSearchParams();
   const token = sp.get("token") || "";
   const [password, setPassword] = useState("");
@@ -30,6 +30,14 @@ export default function ResetPasswordPage(){
       )}
       {msg && <p className="mt-3 text-sm text-white/80">{msg}</p>}
     </div>
+  );
+}
+
+export default function ResetPasswordPage(){
+  return (
+    <Suspense fallback={<div className="max-w-md mx-auto p-6 text-white/60">Loading...</div>}>
+      <ResetPasswordInner />
+    </Suspense>
   );
 }
 

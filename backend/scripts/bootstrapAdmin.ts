@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { connectMongo } from '../src/db/mongoose';
 import { User } from '../src/models/User';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 async function main(){
   const email = (process.argv[2] || '').toLowerCase();

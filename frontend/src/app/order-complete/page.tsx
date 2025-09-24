@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { apiGet } from '@/lib/api';
 
-export default function OrderCompletePage(){
+function OrderCompleteInner(){
   const sp = useSearchParams();
   const [lang, setLang] = useState<string>(typeof window !== 'undefined' ? (localStorage.getItem('lang')||'es') : 'es');
   const [order, setOrder] = useState<any | null>(null);
@@ -82,6 +82,14 @@ export default function OrderCompletePage(){
         <a href="/cuenta" className="bg-neutral-800 hover:bg-neutral-700 rounded px-4 py-2 border border-black">{t('Ver mis órdenes','View my orders')}</a>
       </div>
     </div>
+  );
+}
+
+export default function OrderCompletePage(){
+  return (
+    <Suspense fallback={<div className="max-w-3xl mx-auto px-4 py-12 text-white/60">Loading...</div>}>
+      <OrderCompleteInner />
+    </Suspense>
   );
 }
 

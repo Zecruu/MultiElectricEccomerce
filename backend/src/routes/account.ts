@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { requireAuth, AuthRequest } from '../middleware/auth';
 import { User } from '../models/User';
 
