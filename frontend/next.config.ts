@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
     'cors',
     'cookie-parser',
     'csurf',
+    'dotenv',
     'express-rate-limit',
     'helmet',
     'jsonwebtoken',
